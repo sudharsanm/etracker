@@ -1,12 +1,24 @@
 {
   "name": "etracker",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sudharsanm/etracker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sudharsanm/etracker/issues"
+  },
+  "homepage": "https://github.com/sudharsanm/etracker#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  },
+  "devDependencies": {},
+  "description": ""
 }
