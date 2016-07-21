@@ -3,11 +3,17 @@ var fs = require("fs");
 var path = require("path");
 var express = require("express");
 //var bodyParser = require('body-parser');
+
 var mongojs = require("mongojs");
-//var db = mongojs('TrackExpense');
+//Remote
 var db = mongojs(process.env.mongoConnection);
-//var mycollection = db.collection('Category_ef9dd82b-12e8-4a93-a320-fd515d21e5a0');
 var mCategory = db.collection('Category');
+var mtrack = db.collection("tracks");
+
+//Local
+//var db = mongojs('TrackExpense');
+//var mCategory = db.collection('Category_ef9dd82b-12e8-4a93-a320-fd515d21e5a0');
+
 
 var app = express();
 
@@ -67,6 +73,27 @@ app.post('/categories',function(req, res){
   
 });
 
+app.get('/categoriesForCombo',function(req, res){
+  console.log('Inside GET')
+  mCategory.find({},{_id:0,CategoryName:1},function(err,docs)
+  {
+    console.log(docs);
+    res.json(docs);  
+  }
+  );
+  
+});
+
+app.post('/Track',function(req, res){
+  console.log('Inside POST')
+  console.log(req.body);
+  mtrack.insert(req.body, function(err, docs) {
+    
+    console.log(docs);
+    res.json(docs);  
+  })
+  
+});
 
 // catch 404 and forward to error handler
 // app.use(function(req, res, next) {

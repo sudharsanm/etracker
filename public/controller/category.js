@@ -29,7 +29,8 @@ function($scope,$http){
     refresh();
     
     $scope.addCategory = function() {
-        //console.log($scope.catgory);
+        console.log($scope.catgory);
+        console.log('Inside add');
         $http.post('/categories',$scope.catgory).then(
             function(response) {
             console.log('calling response after add');
