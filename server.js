@@ -2,7 +2,7 @@ var http = require("http");
 var fs = require("fs");
 var path = require("path");
 var express = require("express");
-var bodyParser = require('body-parser');
+//var bodyParser = require('body-parser');
 
 var app = express();
 
@@ -11,11 +11,9 @@ var app = express();
 //app.set('view engine', 'jade');
 //app.set('view engine', 'pug');
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+//app.use(bodyParser.json());
+//app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '/public')));
-
-app.set('port', process.env.PORT || 8080);
 
 app.get('/', function(req, res){
     response.sendFile(path.join(__dirname, 'public/index.html'));

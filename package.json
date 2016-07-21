@@ -17,9 +17,7 @@
   },
   "homepage": "https://github.com/sudharsanm/etracker#readme",
   "dependencies": {
-    "express": "^4.14.0",
-    "body-parser" : "^2.15.5"
-    
+    "express": "^4.14.0"
   },
   "devDependencies": {},
   "description": ""
