@@ -3,6 +3,11 @@ var fs = require("fs");
 var path = require("path");
 var express = require("express");
 //var bodyParser = require('body-parser');
+//var mongojs = require("mongojs");
+//var db = mongojs('TrackExpense');
+//var db = mongojs(process.env.mongoConnection);
+//var mycollection = db.collection('Category_ef9dd82b-12e8-4a93-a320-fd515d21e5a0');
+//var mCategory = db.collection('Category');
 
 var app = express();
 
@@ -15,8 +20,9 @@ var app = express();
 //app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '/public')));
 
-app.get('/', function(req, res){
-    response.sendFile(path.join(__dirname, 'public/index.html'));
+app.get('/C', function(req, res){
+    res.send("Mongo Connection string " + process.env.mongoConnection || "C");
+    //response.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
 app.get('/Track',function(req, res){
