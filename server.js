@@ -72,6 +72,27 @@ app.post('/categories',function(req, res){
   
 });
 
+app.delete('/categories/:id',function(req, res){
+  console.log('Inside DELETE');
+  var id = req.params.id;
+  mCategory.remove({_id: mongojs.ObjectId(id)},function (err, docs) {
+    console.log(docs);
+    res.json(docs);
+  })
+  console.log(id);
+});
+
+app.put('/categories/:id',function(req, res){
+  var id = req.params.id;
+  console.log(req.body.CategoryName);
+  mCategory.findAndModify({query : {_id: mongojs.ObjectId(id)},
+      update: {$set: {CategoryName : req.body.CategoryName, IsActive : req.body.IsActive }},
+      new: true}, function (err, docs) {
+    console.log(docs);
+    res.json(docs);
+  });
+});
+
 app.get('/categoriesForCombo',function(req, res){
   console.log('Inside GET')
   mCategory.find({},{_id:0,CategoryName:1},function(err,docs)
@@ -93,6 +114,118 @@ app.post('/Track',function(req, res){
   })
   
 });
+
+app.delete('/trackDetail/:id',function(req, res){
+  console.log('Inside DELETE Track');
+  var id = req.params.id;
+  mtrack.remove({_id: mongojs.ObjectId(id)},function (err, docs) {
+    console.log(docs);
+    res.json(docs);
+  })
+  console.log(id);
+});
+
+app.get('/trackDetail',function(req, res){
+  var url = require('url');
+  var url_parts = url.parse(req.url, true);
+  var query = url_parts.query;
+  
+  var year = query["MonthYear"].split('-')[0];
+  var month = query["MonthYear"].split('-')[1];
+  
+  console.log('Inside trackDetail Get');
+  mtrack.find({TrackDate : {$gte : year + "-"+ month +"-01T00:00:00Z", $lt : common.getNextMonthYear(month, year) + "-"+ common.getNextMonth(month) +"-01T00:00:00Z" }},function(err,docs)
+  {
+    console.log(docs);
+    res.json(docs);  
+  }
+  );
+});
+
+
+app.get('/TrackSum/:id',function(req, res){
+  console.log("Inside TrackSum");
+  var id = req.params.id;
+  var year = id.split('-')[0];
+  var month = id.split('-')[1];
+  var nextMonth = parseInt(month);
+  var nextYear = parseInt(year)
+  if(nextMonth == 12){
+    nextMonth = 1;
+    nextYear =nextYear + 1; 
+  }
+  else{
+    nextMonth = nextMonth + 1; 
+  }
+  
+  if (nextMonth<10){
+         nextMonth="0" + nextMonth;
+         };
+   
+  mtrack.aggregate([{$match : {TrackDate : {$gte : year + "-"+ month +"-01T00:00:00Z", $lt : nextYear + "-"+ nextMonth +"-01T00:00:00Z" }}}, 
+    {$group: { _id : "1", "Total" : {$sum: "$Amount" }}}],
+  function (err, docs) {
+    console.log(docs);
+    res.json(docs);
+  });
+  //app.use(express.static(path.join(__dirname, '/public/Track.html')));
+});
+
+app.get('/TrackSum/:id',function(req, res){
+  console.log("Inside TrackSum");
+  var id = req.params.id;
+  var year = id.split('-')[0];
+  var month = id.split('-')[1];
+  var nextMonth = parseInt(month);
+  var nextYear = parseInt(year)
+  if(nextMonth == 12){
+    nextMonth = 1;
+    nextYear =nextYear + 1; 
+  }
+  else{
+    nextMonth = nextMonth + 1; 
+  }
+  
+  if (nextMonth<10){
+         nextMonth="0" + nextMonth;
+         };
+   
+  trackCollection.aggregate([{$match : {TrackDate : {$gte : year + "-"+ month +"-01T00:00:00Z", $lt : nextYear + "-"+ nextMonth +"-01T00:00:00Z" }}}, 
+    {$group: { _id : "1", "Total" : {$sum: "$Amount" }}}],
+  function (err, docs) {
+    console.log(docs);
+    res.json(docs);
+  });
+  //app.use(express.static(path.join(__dirname, '/public/Track.html')));
+});
+
+app.get('/CategoryWiseTrack/:id',function(req, res){
+  console.log("Inside CategoryWiseTrack");
+  var id = req.params.id;
+  var year = id.split('-')[0];
+  var month = id.split('-')[1];
+  var nextMonth = parseInt(month);
+  var nextYear = parseInt(year)
+  if(nextMonth == 12){
+    nextMonth = 1;
+    nextYear =nextYear + 1; 
+  }
+  else{
+    nextMonth = nextMonth + 1; 
+  }
+  if (nextMonth<10){
+         nextMonth="0" + nextMonth;
+         };
+         
+  mtrack.aggregate([{$match : {TrackDate : {$gte : year + "-"+ month +"-01T00:00:00Z", $lt : nextYear + "-"+ nextMonth +"-01T00:00:00Z" }}}, 
+    {$group: { "_id" : "$Category", "Total" : {$sum: "$Amount" }}}],
+  function (err, docs) {
+    console.log(docs);
+    res.json(docs);
+  });
+  //app.use(express.static(path.join(__dirname, '/public/Track.html')));
+});
+
 
 // catch 404 and forward to error handler
 // app.use(function(req, res, next) {
