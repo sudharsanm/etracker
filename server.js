@@ -2,7 +2,7 @@ var http = require("http");
 var fs = require("fs");
 var path = require("path");
 var express = require("express");
-//var bodyParser = require('body-parser');
+var bodyParser = require('body-parser');
 
 var mongojs = require("mongojs");
 //Remote
@@ -13,7 +13,6 @@ var mtrack = db.collection("tracks");
 //Local
 //var db = mongojs('TrackExpense');
 //var mCategory = db.collection('Category_ef9dd82b-12e8-4a93-a320-fd515d21e5a0');
-
 
 var app = express();
 
