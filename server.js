@@ -21,8 +21,8 @@ var app = express();
 //app.set('view engine', 'jade');
 //app.set('view engine', 'pug');
 
-//app.use(bodyParser.json());
-//app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '/public')));
 
 // app.get('/C', function(req, res){
