@@ -8,6 +8,7 @@
     <base href="/" />
 </head>
 <body>
+    <form name="frmCategory"> 
     <div class="container" ng-controller="CategoryCtrl" >
         <h2>Category </h2>
         <table class="table">
@@ -19,10 +20,10 @@
             </thead>
             <tbody>
                 <tr>
-                    <td> <input class="form-control" ng-model="catgory.CategoryName"></td>
+                    <td> <input class="form-control" ng-model="catgory.CategoryName" required></td>
                     <td> <input type="checkbox" class="form-control" ng-model="catgory.IsActive" ></td>
-                    <td><button class="btn btn-primary" ng-click="addCategory()">Add Category</button></td>
-                    <td><button class="btn btn-info" ng-click="updateCategory()">Update Category</button></td>
+                    <td><button class="btn btn-primary" ng-click="frmCategory.$valid && addCategory()">Add Category</button></td>
+                    <td><button class="btn btn-info" ng-click="frmCategory.$valid && updateCategory()">Update Category</button></td>
                     <td><button class="btn btn-info" ng-click="clearCategory()">Clear</button></td>
                 </tr>
                     
@@ -35,6 +36,7 @@
             </tbody>
         </table>            
     </div>
+    </form>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
     <script src="controller/category.js"></script>
 </body>    

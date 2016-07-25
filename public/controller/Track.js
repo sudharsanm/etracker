@@ -1,7 +1,6 @@
 var myApp = angular.module('TrackApp', []);
 myApp.controller('TrackCtrl', ['$scope','$http',
 function($scope,$http){
-    console.log("Hello World from TrackApp controller");
     
     var GetYearMonth = function (date) {
         var year=date.getFullYear();
@@ -33,7 +32,7 @@ function($scope,$http){
        };
     
     var GetSum = function(id) {
-        console.log(id);
+        //console.log(id);
         $http.get('/TrackSum/'+ id).then(
             function (success) {
                 console.log('GET Sum By ID Success' + success.data[0]);
@@ -48,7 +47,7 @@ function($scope,$http){
      
      
      var GetCategorySum = function(id) {
-        console.log(id);
+        //console.log(id);
         $http.get('/CategoryWiseTrack/'+ id).then(
             function (success) {
                 console.log('CategoryWiseTrack Success' + success.data);
@@ -120,5 +119,15 @@ function($scope,$http){
         ResetControls();
     }
     
-     
+    $scope.DetailTrack = function () {
+        $http.get('/Detail').then(
+            function(response) {
+            console.log('Detail ');
+        },
+        function(error) {
+            console.log('Error Block'+ error);
+        });
+    }
+   
+   
 }]);
