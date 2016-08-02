@@ -10,6 +10,9 @@
 <body>
     <div class="container" ng-controller="TrackDetailCtrl" >
         <h2> Track Details </h2>
+        <div>
+            <button class="btn btn-primary" ng-click="OpenTrackPage()">Track</button></td>
+        </div>
         <table class="table">
             <thead>
                 <th>Category Name</th>
@@ -20,8 +23,8 @@
             </thead>
             <tbody>
                 <!--<tr>
-                    <td> <input class="form-control" ng-model="catgory.CategoryName"></td>
-                    <td> <input type="checkbox" class="form-control" ng-model="catgory.IsActive" ></td>
+                    <td> <input class="form-control" ng-model="track.Category"></td>
+                    <td> <input type="checkbox" class="form-control" ng-model="track.TrackDate" ></td>
                     <td><button class="btn btn-primary" ng-click="addCategory()">Add Category</button></td>
                     <td><button class="btn btn-info" ng-click="updateCategory()">Update Category</button></td>
                     <td><button class="btn btn-info" ng-click="clearCategory()">Clear</button></td>
@@ -29,14 +32,15 @@
                     
                 <tr ng-repeat="track in trackList">
                     <td>{{track.Category}}</td>
-                    <td>{{track.TrackDate}}</td>
+                    <td>{{track.TrackDate | date: 'yyyy-MM-dd' }}</td>
                     <!--<td><input type="date" id="trackDate" name="input" ng-model="track.TrackDate"
                         required /></td>-->
                     <td><input id="amount" name="input" ng-model="track.Amount"
                         type="number" required /></td>
                     <td>{{track.Description}}</td>
+                    <!--<td><button class="btn btn-warning" ng-click="editTrackDetail(track._id)">Edit</button></td>-->
                     <td><button class="btn btn-danger" ng-click="deleteTrackDetail(track._id)">Remove</button></td>
-                    <!--<td><button class="btn btn-warning" ng-click="editCategory(catgory._id)">Edit</button></td>-->
+                    <td><button class="btn btn-info" ng-click="updateTrackDetail(track._id, track.Amount)">Update</button></td>
                     </tr>
             </tbody>
         </table>            

@@ -1,15 +1,7 @@
 var myApp = angular.module('trackDetailApp',[]);
 
-myApp.controller('TrackDetailCtrl', ['$scope','$http',
-function($scope,$http){
-    
-    var refresh = function() {
-        console.log('Inside response');
-        $http.get('/trackDetail',{params :{"MonthYear": GetYearMonth(new Date())}}).success(function(response) {
-            $scope.trackList = response;   
-            $scope.track = "";
-        });
-    };
+myApp.controller('TrackDetailCtrl', ['$scope','$http','$location',
+function($scope,$http,$location){
     
     var GetYearMonth = function (date) {
         var year=date.getFullYear();
@@ -20,6 +12,16 @@ function($scope,$http){
         var day=date.getDate();   
         return year + "-" + month; 
     }
+    
+    var refresh = function() {
+        console.log('Inside response');
+        var monthYear = $location.search().MonthYear ||  GetYearMonth(new Date());
+        $http.get('/trackDetail',{params :{"MonthYear":monthYear}}).success(function(response) {
+            console.log(response);
+            $scope.trackList = response;   
+            $scope.track = "";
+        });
+    };
     
     refresh();
     
@@ -49,14 +51,18 @@ function($scope,$http){
         );
      };
      
-     $scope.updateTrackDetail = function() {
-         console.log('Put ' + $scope.catgory._id);
-        $http.put('/trackDetail/'+ $scope.track._id, $scope.Amount, $scope.TrackDate).then(
+     $scope.updateTrackDetail = function(id, amt) {
+         console.log(id);
+         var recordInfo = {
+            Amount : amt
+        }
+        $http.put('/trackDetail/'+ id,recordInfo).then(
             function (success) {
                 console.log('Put Success');
                 refresh();
             },
             function (error) {
+                console.log(error);
                 console.log('Put falied');
             }
         );
@@ -65,6 +71,14 @@ function($scope,$http){
     $scope.clearTrackDetail = function() {
         $scope.track = "";
     };
+    
+    $scope.OpenTrackPage = function() {
+        var currentPath = $location.absUrl();
+        currentPath = currentPath.replace("/Detail","/Track");
+        currentPath = currentPath.replace("/detail","/Track");
+        console.log(currentPath);
+        window.location.href = currentPath;
+   };
 }]);
 
 // function CategoryCtrl()

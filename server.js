@@ -8,11 +8,14 @@ var mongojs = require("mongojs");
 //Remote
 var db = mongojs(process.env.mongoConnection);
 var mCategory = db.collection('Category');
-var mtrack = db.collection("tracks");
+
 
 //Local
 //var db = mongojs('TrackExpense');
 //var mCategory = db.collection('Category_ef9dd82b-12e8-4a93-a320-fd515d21e5a0');
+
+var mtrack = db.collection("tracks");
+var common = require('./public/common.js');
 
 var app = express();
 
@@ -123,6 +126,17 @@ app.delete('/trackDetail/:id',function(req, res){
     res.json(docs);
   })
   console.log(id);
+});
+
+app.put('/trackDetail/:id',function(req, res){
+  var id = req.params.id;
+  console.log(req.body);
+  mtrack.findAndModify({query : {_id: mongojs.ObjectId(id)},
+      update: {$set: {Amount : req.body.Amount}},
+      new: true}, function (err, docs) {
+    console.log(docs);
+    res.json(docs);
+  });
 });
 
 app.get('/trackDetail',function(req, res){

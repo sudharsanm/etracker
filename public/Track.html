@@ -46,6 +46,7 @@
                     <button class="btn btn-primary" ng-click="frmTrack.$valid &&  addTrack()">Add </button>
                     <button class="btn btn-info" ng-click="clearTrack()">Clear</button>
                     <button class="btn btn-info" ng-click="DetailTrack()">Detail</button>
+                    <button class="btn btn-info" ng-click="openCategory()">Category</button>
                 </div>
             </div>
             <div class="row" style="padding:10px">
@@ -54,13 +55,13 @@
             </div>
         <div class="container" style="padding:5px">
             <div class="row" style="padding:1px">
-                <div class="col-md-2"><strong>Category Name</strong></div>
-               <div class="col-md-3"><strong>Total</strong></div>
+                <div class="col-xs-2"><strong>Category Name</strong></div>
+               <div class="col-xs-2"><strong>Total</strong></div>
             </div>
             <hr style="border-width:1px;border-style: inset">
             <div class="row" ng-repeat="catgory in CategoryWiseTrack" style="padding:1px">
-                <div class="col-xs-6">{{catgory._id}}</div>
-                   <div class="col-xs-6">{{catgory.Total}}</div>
+                <div class="col-xs-2">{{catgory._id}}</div>
+                   <div class="col-xs-2">{{catgory.Total}}</div>
             </div>
         </div>
             <!--<table class="table">

@@ -1,6 +1,6 @@
 var myApp = angular.module('TrackApp', []);
-myApp.controller('TrackCtrl', ['$scope','$http',
-function($scope,$http){
+myApp.controller('TrackCtrl', ['$scope','$http','$location',
+function($scope, $http, $location){
     
     var GetYearMonth = function (date) {
         var year=date.getFullYear();
@@ -20,10 +20,23 @@ function($scope,$http){
             month="0" + month;
             };
         var day=date.getDate();
+        //Adding 5, 30, 1 to make the time suits for universial
         return new Date(year, month, day,5,30,1);   
     }
     
-    $scope.selectedMonth =  GetTodaysDate();
+    var SetMonth = function() {
+        var yearMonth = $location.search().MonthYear;
+        if(yearMonth !== undefined)
+        {
+            return new Date(yearMonth.split('-')[0], parseInt(yearMonth.split('-')[1])-1, 1,5,30,1)
+        }
+        else
+        {
+            return GetTodaysDate();
+        }
+    }
+    
+    $scope.selectedMonth =  SetMonth();
     console.log($scope.selectedMonth);
     
     $scope.monthSum = {
@@ -87,7 +100,8 @@ function($scope,$http){
     };
     
     ResetControls(true);
-    GetSum(GetYearMonth(new Date())); 
+    GetSum(GetYearMonth($scope.selectedMonth));
+    //GetSum(GetYearMonth(new Date())); 
     
     $scope.addTrack = function() {
         
@@ -120,14 +134,29 @@ function($scope,$http){
     }
     
     $scope.DetailTrack = function () {
-        $http.get('/Detail').then(
-            function(response) {
-            console.log('Detail ');
-        },
-        function(error) {
-            console.log('Error Block'+ error);
-        });
+        console.log('Redirecting to Detail');
+        var currentPath =$location.absUrl();
+        currentPath = currentPath.replace("/Track","/Detail");
+        currentPath = currentPath.replace("/track","/Detail");
+        var paramPosition = currentPath.indexOf('#'); 
+        if(paramPosition> 1)
+            currentPath = currentPath.substring(0,paramPosition);
+        currentPath = currentPath + "#/?MonthYear=" + GetYearMonth($scope.selectedMonth);
+        console.log(currentPath);
+        window.location.href = currentPath;
+        //console.log($location.absUrl());
     }
-   
-   
+    
+    $scope.openCategory = function () {
+        var currentPath =$location.absUrl();
+        currentPath = currentPath.replace("/Track","/");
+        currentPath = currentPath.replace("/track","/");
+        var paramPosition = currentPath.indexOf('#'); 
+        if(paramPosition> 1)
+            currentPath = currentPath.substring(0,paramPosition);
+        console.log(currentPath);
+        window.location.href = currentPath;
+        //console.log($location.absUrl());
+    }
+    
 }]);

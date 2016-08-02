@@ -12,8 +12,8 @@ var myApp = angular.module('myApp',
 //          controller : "CategoryCtrl"
 //      })
 //  });
-myApp.controller('CategoryCtrl', ['$scope','$http',
-function($scope,$http){
+myApp.controller('CategoryCtrl', ['$scope','$http','$location',
+function($scope,$http,$location){
     console.log("Hello World from controller");
     
     var refresh = function() {
@@ -86,4 +86,11 @@ function($scope,$http){
     $scope.clearCategory = function() {
         $scope.catgory = "";
     };
+    
+    $scope.OpenTrackPage = function() {
+        var currentPath = $location.absUrl();
+        currentPath = currentPath + "Track";
+        window.location.href = currentPath;
+    };
+    
 }]);
