@@ -23,5 +23,12 @@ getNextMonthYear : function(month, year)  {
         nextMonthYear = year; 
     }
     return nextMonthYear;
-} 
+},
+
+Log : function (message) {
+    if(process.env.EnableLog || false)  {
+        console.log(message);
+    }
+}
+ 
 }

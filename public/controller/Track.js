@@ -149,8 +149,8 @@ function($scope, $http, $location){
     
     $scope.openCategory = function () {
         var currentPath =$location.absUrl();
-        currentPath = currentPath.replace("/Track","/");
-        currentPath = currentPath.replace("/track","/");
+        currentPath = currentPath.replace("/Track","/Category");
+        currentPath = currentPath.replace("/track","/Category");
         var paramPosition = currentPath.indexOf('#'); 
         if(paramPosition> 1)
             currentPath = currentPath.substring(0,paramPosition);

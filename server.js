@@ -14,10 +14,15 @@ var mCategory = db.collection('Category');
 //var db = mongojs('TrackExpense');
 //var mCategory = db.collection('Category_ef9dd82b-12e8-4a93-a320-fd515d21e5a0');
 
+var session = require('express-session');
 var mtrack = db.collection("tracks");
 var common = require('./public/common.js');
 
 var app = express();
+app.use(session({secret:'ssshhhh',saveUninitialized: true,
+                 resave: true}));
+
+var sess;
 
 // view engine setup
 //app.set('views', path.join(__dirname, 'views'));
@@ -33,21 +38,57 @@ app.use(express.static(path.join(__dirname, '/public')));
 //     //response.sendFile(path.join(__dirname, 'public/index.html'));
 // });
 
+
+app.post('/login',function(req,res){
+  sess = req.session;
+  if(req.body.Password == (process.env.PassCode || "1234" ))  {
+    sess.IsValid=true;
+    res.json({Status : "Success"});
+  }
+  else  {
+    sess.IsValid=false;
+    res.json({Status : "Invalid User"});
+  }
+  
+});
+
+
 app.get('/Track',function(req, res){
-  res.sendFile(path.join(__dirname, 'public/Track.html'));
+  if(sess !== undefined && sess.IsValid == true)  {
+    res.sendFile(path.join(__dirname, 'public/Track.html'));
+  }
+  else{
+    res.sendFile(path.join(__dirname, 'public/index.html'));
+  }
   //app.use(express.static(path.join(__dirname, '/public/Track.html')));
 });
 
 app.get('/Detail',function(req, res){
-  res.sendFile(path.join(__dirname, 'public/TrackDetail.html'));
+  if(sess !== undefined && sess.IsValid == true) {
+    res.sendFile(path.join(__dirname, 'public/TrackDetail.html'));
+  }
+  else{
+    res.sendFile(path.join(__dirname, 'public/index.html'));
+  }
   //app.use(express.static(path.join(__dirname, '/public/Track.html')));
 });
 
+app.get('/Category',function(req, res){
+  if(sess !== undefined && sess.IsValid == true) {
+    res.sendFile(path.join(__dirname, 'public/Category.html'));
+  }
+  else{
+    res.sendFile(path.join(__dirname, 'public/index.html'));
+  }
+  //app.use(express.static(path.join(__dirname, '/public/Track.html')));
+});
+
+
 app.get('/categories',function(req, res){
-  console.log('Inside GET')
+  common.Log('Inside GET')
   mCategory.find(function(err,docs)
   {
-    console.log(docs);
+    common.Log(docs);
     res.json(docs);
   }
   );
@@ -55,52 +96,57 @@ app.get('/categories',function(req, res){
 });
 
 app.get('/categories/:id',function(req, res){
-  console.log('Inside GET ID');
+  common.Log('Inside GET ID');
   var id = req.params.id;
   mCategory.findOne({_id: mongojs.ObjectId(id)},function (err, docs) {
-    console.log(docs);
+    common.Log(docs);
     res.json(docs);
   })
-  console.log(id);
+  common.Log(id);
 });
 
 app.post('/categories',function(req, res){
-  console.log('Inside POST')
-  console.log(req.body);
-  mCategory.insert(req.body, function(err, docs) {
-    
-    console.log(docs);
-    res.json(docs);  
-  })
-  
+  if(sess !== undefined && sess.IsValid == true)  {
+    common.Log('Inside POST')
+    common.Log(req.body);
+    mCategory.insert(req.body, function(err, docs) {
+      
+      common.Log(docs);
+      res.json(docs);  
+    })
+  }
 });
 
 app.delete('/categories/:id',function(req, res){
-  console.log('Inside DELETE');
-  var id = req.params.id;
-  mCategory.remove({_id: mongojs.ObjectId(id)},function (err, docs) {
-    console.log(docs);
-    res.json(docs);
-  })
-  console.log(id);
+  if(sess !== undefined && sess.IsValid == true)  {
+    common.Log('Inside DELETE');
+    var id = req.params.id;
+    mCategory.remove({_id: mongojs.ObjectId(id)},function (err, docs) {
+      common.Log(docs);
+      res.json(docs);
+    })
+    common.Log(id);
+  }
 });
 
 app.put('/categories/:id',function(req, res){
-  var id = req.params.id;
-  console.log(req.body.CategoryName);
-  mCategory.findAndModify({query : {_id: mongojs.ObjectId(id)},
-      update: {$set: {CategoryName : req.body.CategoryName, IsActive : req.body.IsActive }},
-      new: true}, function (err, docs) {
-    console.log(docs);
-    res.json(docs);
-  });
+  if(sess !== undefined && sess.IsValid == true)  {
+    var id = req.params.id;
+    common.Log(req.body.CategoryName);
+    mCategory.findAndModify({query : {_id: mongojs.ObjectId(id)},
+        update: {$set: {CategoryName : req.body.CategoryName, IsActive : req.body.IsActive }},
+        new: true}, function (err, docs) {
+      common.Log(docs);
+      res.json(docs);
+    });
+  }
 });
 
 app.get('/categoriesForCombo',function(req, res){
-  console.log('Inside GET')
+  common.Log('Inside GET')
   mCategory.find({},{_id:0,CategoryName:1},function(err,docs)
   {
-    console.log(docs);
+    common.Log(docs);
     res.json(docs);  
   }
   );
@@ -108,57 +154,64 @@ app.get('/categoriesForCombo',function(req, res){
 });
 
 app.post('/Track',function(req, res){
-  console.log('Inside POST')
-  console.log(req.body);
-  mtrack.insert(req.body, function(err, docs) {
-    
-    console.log(docs);
-    res.json(docs);  
-  })
-  
+  if(sess !== undefined && sess.IsValid == true)  {
+    common.Log('Inside POST')
+    common.Log(req.body);
+    mtrack.insert(req.body, function(err, docs) {
+      
+      common.Log(docs);
+      res.json(docs);  
+    })
+  }
 });
 
 app.delete('/trackDetail/:id',function(req, res){
-  console.log('Inside DELETE Track');
-  var id = req.params.id;
-  mtrack.remove({_id: mongojs.ObjectId(id)},function (err, docs) {
-    console.log(docs);
-    res.json(docs);
-  })
-  console.log(id);
+  if(sess !== undefined && sess.IsValid == true)  {
+    common.Log('Inside DELETE Track');
+    var id = req.params.id;
+    mtrack.remove({_id: mongojs.ObjectId(id)},function (err, docs) {
+      common.Log(docs);
+      res.json(docs);
+    })
+    common.Log(id);
+  }
 });
 
 app.put('/trackDetail/:id',function(req, res){
-  var id = req.params.id;
-  console.log(req.body);
-  mtrack.findAndModify({query : {_id: mongojs.ObjectId(id)},
-      update: {$set: {Amount : req.body.Amount}},
-      new: true}, function (err, docs) {
-    console.log(docs);
-    res.json(docs);
-  });
+  if(sess !== undefined && sess.IsValid == true)  {
+    var id = req.params.id;
+    common.Log(req.body);
+    mtrack.findAndModify({query : {_id: mongojs.ObjectId(id)},
+        update: {$set: {Amount : req.body.Amount}},
+        new: true}, function (err, docs) {
+      common.Log(docs);
+      res.json(docs);
+    });
+  }
 });
 
 app.get('/trackDetail',function(req, res){
-  var url = require('url');
-  var url_parts = url.parse(req.url, true);
-  var query = url_parts.query;
-  
-  var year = query["MonthYear"].split('-')[0];
-  var month = query["MonthYear"].split('-')[1];
-  
-  console.log('Inside trackDetail Get');
-  mtrack.find({TrackDate : {$gte : year + "-"+ month +"-01T00:00:00Z", $lt : common.getNextMonthYear(month, year) + "-"+ common.getNextMonth(month) +"-01T00:00:00Z" }},function(err,docs)
-  {
-    console.log(docs);
-    res.json(docs);  
+  if(sess !== undefined && sess.IsValid == true)  {
+    var url = require('url');
+    var url_parts = url.parse(req.url, true);
+    var query = url_parts.query;
+    
+    var year = query["MonthYear"].split('-')[0];
+    var month = query["MonthYear"].split('-')[1];
+    
+    common.Log('Inside trackDetail Get');
+    mtrack.find({TrackDate : {$gte : year + "-"+ month +"-01T00:00:00Z", $lt : common.getNextMonthYear(month, year) + "-"+ common.getNextMonth(month) +"-01T00:00:00Z" }},function(err,docs)
+    {
+      common.Log(docs);
+      res.json(docs);  
+    }
+    );
   }
-  );
 });
 
 
 app.get('/TrackSum/:id',function(req, res){
-  console.log("Inside TrackSum");
+  common.Log("Inside TrackSum");
   var id = req.params.id;
   var year = id.split('-')[0];
   var month = id.split('-')[1];
@@ -179,14 +232,14 @@ app.get('/TrackSum/:id',function(req, res){
   mtrack.aggregate([{$match : {TrackDate : {$gte : year + "-"+ month +"-01T00:00:00Z", $lt : nextYear + "-"+ nextMonth +"-01T00:00:00Z" }}}, 
     {$group: { _id : "1", "Total" : {$sum: "$Amount" }}}],
   function (err, docs) {
-    console.log(docs);
+    common.Log(docs);
     res.json(docs);
   });
   //app.use(express.static(path.join(__dirname, '/public/Track.html')));
 });
 
 app.get('/TrackSum/:id',function(req, res){
-  console.log("Inside TrackSum");
+  common.Log("Inside TrackSum");
   var id = req.params.id;
   var year = id.split('-')[0];
   var month = id.split('-')[1];
@@ -207,14 +260,14 @@ app.get('/TrackSum/:id',function(req, res){
   trackCollection.aggregate([{$match : {TrackDate : {$gte : year + "-"+ month +"-01T00:00:00Z", $lt : nextYear + "-"+ nextMonth +"-01T00:00:00Z" }}}, 
     {$group: { _id : "1", "Total" : {$sum: "$Amount" }}}],
   function (err, docs) {
-    console.log(docs);
+    common.Log(docs);
     res.json(docs);
   });
   //app.use(express.static(path.join(__dirname, '/public/Track.html')));
 });
 
 app.get('/CategoryWiseTrack/:id',function(req, res){
-  console.log("Inside CategoryWiseTrack");
+  common.Log("Inside CategoryWiseTrack");
   var id = req.params.id;
   var year = id.split('-')[0];
   var month = id.split('-')[1];
@@ -234,7 +287,7 @@ app.get('/CategoryWiseTrack/:id',function(req, res){
   mtrack.aggregate([{$match : {TrackDate : {$gte : year + "-"+ month +"-01T00:00:00Z", $lt : nextYear + "-"+ nextMonth +"-01T00:00:00Z" }}}, 
     {$group: { "_id" : "$Category", "Total" : {$sum: "$Amount" }}}],
   function (err, docs) {
-    console.log(docs);
+    common.Log(docs);
     res.json(docs);
   });
   //app.use(express.static(path.join(__dirname, '/public/Track.html')));

@@ -1,6 +1,6 @@
-<html ng-app="myApp">
+<html ng-app="loginApp">
 <head>
-    <title> Category </title>
+    <title> eTracker </title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <!-- Optional theme -->
@@ -8,40 +8,49 @@
     <base href="/" />
 </head>
 <body>
-    <form name="frmCategory"> 
-    <div class="container" ng-controller="CategoryCtrl" >
-        <h2>Category </h2>
+    <form name="frmLogin"> 
+    <div class="container" ng-controller="LoginCtrl" >
+        <h2>Password </h2>
         <div>
-            <button class="btn btn-primary" ng-click="OpenTrackPage()">Track</button></td>
-        </div>
-        <table class="table">
-            <thead>
-                <th>Category Name</th>
-                <th>IsActive</th>
-                <th>Action</th>
-                <th
-            </thead>
-            <tbody>
-                <tr>
-                    <td> <input class="form-control" ng-model="catgory.CategoryName" required></td>
-                    <td> <input type="checkbox" class="form-control" ng-model="catgory.IsActive" ></td>
-                    <td><button class="btn btn-primary" ng-click="frmCategory.$valid && addCategory()">Add Category</button></td>
-                    <td><button class="btn btn-info" ng-click="frmCategory.$valid && updateCategory()">Update Category</button></td>
-                    <td><button class="btn btn-info" ng-click="clearCategory()">Clear</button></td>
-                </tr>
-                    
-                <tr ng-repeat="catgory in categoryList">
-                    <td>{{catgory.CategoryName}}</td>
-                    <td>{{catgory.IsActive}}</td>
-                    <td><button class="btn btn-danger" ng-click="deleteCategory(catgory._id)">Remove</button></td>
-                    <td><button class="btn btn-warning" ng-click="editCategory(catgory._id)">Edit</button></td>
-                    </tr>
-            </tbody>
-        </table>            
+        <div class="col-md-3"> <input class="form-control" ng-model="Passcode" type="password" required></div>           
+        <div class="col-md-3"> <button class="btn btn-info" ng-click="OnLogin()">Submit</button></div>
+        <div class="col-md-3">{{error}} </div>
+        </div>           
     </div>
     </form>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
-    <script src="controller/category.js"></script>
+    <script>
+        var loginApp = angular.module('loginApp',[]);
+        loginApp.controller('LoginCtrl', ['$scope','$http','$location',
+        function($scope,$http,$location){
+        console.log("LoginCtrl controller");
+    
+        $scope.OnLogin = function() {
+            var msg = {
+                Password : $scope.Passcode
+            };
+            $http.post('/login/', msg).then(
+                function (success) {
+                    console.log(success.data);
+                    if(success.data.Status == "Success")
+                    {
+                        var currentPath =$location.absUrl();
+                        currentPath = currentPath.replace("/Track","/");
+                        window.location.href = currentPath + "Track";
+                    }
+                    else
+                    {
+                        $scope.error = "Invalid Credentials";
+                    }
+                    
+                },
+                function (error) {
+                    $scope.error = "Unable to process your request";
+                }
+            );
+        };
+}]);
+    </script>
 </body>    
 </html>
     

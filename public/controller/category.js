@@ -89,7 +89,8 @@ function($scope,$http,$location){
     
     $scope.OpenTrackPage = function() {
         var currentPath = $location.absUrl();
-        currentPath = currentPath + "Track";
+        currentPath = currentPath.replace("/Category","/Track");
+        currentPath = currentPath.replace("/category","/Track");
         window.location.href = currentPath;
     };
     
